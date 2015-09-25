@@ -1,0 +1,9 @@
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.exe.config
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.exe
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.pdb
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.Form1.resources
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.Properties.Resources.resources
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.csproj.GenerateResource.Cache
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.exe
+c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.pdb
+C:\Users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.csprojResolveAssemblyReference.cache

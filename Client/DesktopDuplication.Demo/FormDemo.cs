@@ -85,8 +85,6 @@ namespace DesktopDuplication.Demo
 
 
 
-
-
         public void DeltaAsync(ScreenFrame frame)
         {
             using (var memoryStream = new MemoryStream())
@@ -98,11 +96,6 @@ namespace DesktopDuplication.Demo
                         if (frame.NewPixels[i] == frame.PreviousPixels[i] &&
                             frame.NewPixels[i + 1] == frame.PreviousPixels[i + 1] &&
                             frame.NewPixels[i + 2] == frame.PreviousPixels[i + 2]) continue;
-
-
-
-
-                      
                         writer.Write((uint)i);
                         //MessageBox.Show(i.ToString());
                         //   Console.WriteLine(i.ToString());
@@ -112,9 +105,10 @@ namespace DesktopDuplication.Demo
                         writer.Write(frame.NewPixels[i + 2]);
 
                     }
-                   
-                    SendVarData(memoryStream.ToArray());
-                   // MessageBox.Show(memoryStream.Length.ToString());
+
+                    byte[] buff =  memoryStream.ToArray();
+                    SendVarData(buff);
+                  this.Invoke(new Action(()=>this.Text=buff.Length.ToString()));
                 }
             }
         }
@@ -122,35 +116,14 @@ namespace DesktopDuplication.Demo
         private void FormDemo_Shown(object sender, EventArgs e)
         {
             TcpClient client = new TcpClient();
-          
-        
-     
             client.Connect("localhost", 10);
             sck = client.Client;
-          
-            //MessageBox.Show(screen.NewPixels[i].ToString());
-
             Thread.Sleep(200);
-          var screen = desktopDuplicator.GetFrame(0);
-          StartAsync(screen);
-          //  client.Connect("localhost", 10);
-
-         
-          
-            //var screen = desktopDuplicator.GetFrame(0);
-
-           // MessageBox.Show(screen.NewPixels[0].ToString());
-            
-               //MessageBox.Show(screen.PreviousPixels.Length.ToString());
-         //       this.label1.Text = screen.NewPixels.Length.ToString();
-
-                count++;
-               
-             // MessageBox.Show(   frame.AccumulatedFrames.ToString());
-                   // this.pictureBox1.Image = frame.DesktopImage;
-
-               Thread th = new Thread(send);
-               th.Start();
+            var screen = desktopDuplicator.GetFrame(0);
+            StartAsync(screen);
+            count++;
+            Thread th = new Thread(send);
+            th.Start();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

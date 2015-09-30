@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -18,12 +19,10 @@ namespace WindowsFormsApplication16
         }
 
         TcpListener tl = new TcpListener(IPAddress.Any, 10);
-        TcpClient cl;
-        NetworkStream ns;
+        TcpClient cl;      
         byte[] buffer = new byte[4];
         Socket s;
-
-
+        int count = 0;
         public static byte[] decompress(byte[] compressed)
         {
             using (MemoryStream inStream = new MemoryStream(compressed))
@@ -34,112 +33,100 @@ namespace WindowsFormsApplication16
                 return outStream.ToArray();
             }
         }
-        public void retreive()
-        {
+      
+            public  async Task Run(Control control, Bitmap bitmap,Socket s)
+            {
+              byte[] res = decompress(ReceiveVarData(s));//receiving the array.      
+                await DispatchStartAsync(control, bitmap, res);
 
-            
-                byte[] res = ReceiveVarData(s);
+                    while (true)
+                    {
+                        count++;
+                        byte[] res2 = (ReceiveVarData(s));
+                        await DispatchDeltaAsync(control, bitmap, res2);
 
+                    }             
+            }
 
+            private static async Task DispatchStartAsync(Control control, Bitmap bitmap, byte []buffer)
+            {
+               
+                control.Invoke(new Action(() =>
+                {
+                    ProcessStart(bitmap, buffer);
+                    control.Refresh();
+                }));
+            }
 
+            private static async Task DispatchDeltaAsync(Control control, Bitmap bitmap, byte[] buffer)
+            {
               
 
-                byte[] dec = decompress(res);
-                MemoryStream ms = new MemoryStream(dec);
-                BinaryReader br = new BinaryReader(ms);
-
-                //test(br);
-                Bitmap first = FirstProcess(br);
-                pictureBox1.Image =new Bitmap( first);
-
-                while (true)
+                control.Invoke(new Action(() =>
                 {
-                    byte[] del = ReceiveVarData(s);
-                    this.Invoke(new Action(()=>this.Text=del.Length.ToString()+"kb"));
-                    MemoryStream memory = new MemoryStream(del);
-                    BinaryReader br2 = new BinaryReader(memory);
-                    Bitmap curr = DeltaProcessing(first, br2);
-                    pictureBox1.Image = curr.Clone() as Bitmap;
-                    //   MessageBox.Show(res.Length.ToString());
+                    ProcessDelta(bitmap, buffer);
+                    control.Refresh();
+                }));
+            }
 
-                }
-            
+            private static unsafe void ProcessStart(Bitmap bitmap, byte[] buffer)
+            {
+                var imageBoundaries = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                var imageData = bitmap.LockBits(imageBoundaries, ImageLockMode.WriteOnly, bitmap.PixelFormat);
 
-      
-       
-               
-        }
+              
+                    var pointer = (byte*)imageData.Scan0;
+
+                    for (int i = 0; i < buffer.Length; i += 3)
+                    {                   
+                        pointer[0] = buffer[i ];
+                        pointer[1] = buffer[i + 1];
+                        pointer[2] = buffer[i + 2];
+                        pointer += 4;
 
 
-        private unsafe Bitmap DeltaProcessing(Bitmap bmp, BinaryReader br)
-        {          
-          BitmapData  bmData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, 1920,1080), System.Drawing.Imaging.ImageLockMode.ReadWrite,PixelFormat.Format32bppRgb);
-          IntPtr scan0 = bmData.Scan0;
+                    }
+                bitmap.UnlockBits(imageData);
+            }
 
-            for (int i=0;i<br.BaseStream.Length/7;i++)
+            private static unsafe void ProcessDelta(Bitmap bitmap, byte[] buffer)
             {
 
-                    byte* p = (byte*)((uint)(scan0) + br.ReadUInt32());
-                    p[0] = br.ReadByte();
-                    p[1] = br.ReadByte();
-                    p[2] = br.ReadByte();
-                    p[3] = 255;
-               
+            var imageBoundaries = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            var imageData = bitmap.LockBits(imageBoundaries, ImageLockMode.WriteOnly, bitmap.PixelFormat);
+            var basePointer = (byte*) imageData.Scan0;
+
+
+                for (int i = 0; i < buffer.Length;i+=7 )
+                {
+
+                    var pointer = basePointer + BitConverter.ToInt32(buffer,i);
+                        pointer[0] = buffer[i+4];
+                        pointer[1] = buffer[i+5]; 
+                        pointer[2] = buffer[i+6];
+                    
            }
 
-            bmp.UnlockBits(bmData);
-            return bmp;
-
-        }
-
-        
-        private void Form1_Load(object sender, EventArgs e)
-        {  
+            bitmap.UnlockBits(imageData);
             
-        
-
+        }
+    
+        private void Form1_Load(object sender, EventArgs e)
+        {
             tl.Start();
             cl = tl.AcceptTcpClient();
             s = cl.Client;
-            Thread th = new Thread(retreive);
-            th.Start();
-        }
 
-        Bitmap bmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width,Screen.PrimaryScreen.Bounds.Height);
-        private unsafe Bitmap  FirstProcess (BinaryReader br)
-        {
+            var bitmap = new Bitmap(1920, 1080, PixelFormat.Format32bppRgb);
+            pictureBox1.Image = bitmap;
+            Task.Run(() => Run(this, bitmap,s));
+            
+            
+        }
+        
 
         
-            BitmapData bmData = bmp.LockBits(new Rectangle(0, 0, 1920, 1080), System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
-
-            IntPtr scan0 = bmData.Scan0;
-            int stride = bmData.Stride;
-
-
-            int nWidth = bmp.Width;
-            int nHeight = bmp.Height;
-
-        
-            for (int y = 0; y < nHeight; y++)
-            {
-                byte* p = (byte*)scan0.ToPointer();
-                p += y * stride;
-
-                for (int x = 0; x < nWidth; x++)
-                {
-                   p[0] = br.ReadByte();
-                   p[1] = br.ReadByte();
-                   p[2] = br.ReadByte();
-                   p[3] = 255; 
-                   p += 4;
-
-                }
-
-            }
-            bmp.UnlockBits(bmData);   
-            return bmp;
-        }
-
+       
 
        
     private static byte[] ReceiveVarData(Socket s)
@@ -167,6 +154,12 @@ namespace WindowsFormsApplication16
       }
       return data;
    }
+
+    private void timer1_Tick(object sender, EventArgs e)
+    {
+        this.Text = count.ToString();
+        count = 0;
+    }
 
         
 

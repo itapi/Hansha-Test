@@ -7,3 +7,12 @@ c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\W
 c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.exe
 c:\users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.pdb
 C:\Users\itapi\documents\visual studio 2013\Projects\WindowsFormsApplication16\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.csprojResolveAssemblyReference.cache
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.exe.config
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.exe
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.pdb
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.exe
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\bin\Debug\WindowsFormsApplication16.pdb
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.csprojResolveAssemblyReference.cache
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.Form1.resources
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.Properties.Resources.resources
+C:\Users\itapi\Desktop\itamar\Server\WindowsFormsApplication16\obj\Debug\WindowsFormsApplication16.csproj.GenerateResource.Cache
